@@ -20,7 +20,7 @@ if ! $(TARGETINFO_LOCATE)
 rule LanesBin2C PARENTS : TARGETS : SOURCES
 {
 	Depends $(TARGETS) : $(SOURCES) ;
-	Depends $(TARGETS) : $(LUA_EXE) ;
+	Needs $(TARGETS) : $(LUA_EXE) ;
 
 	Clean clean:$(PARENTS) : $(TARGETS) ;
 
@@ -43,26 +43,28 @@ rule LanesBin2C
 
 }
 
-local keeper.lua = <lanes>keeper.lua ;
+C.ActiveTarget lanes ;
+
+local keeper.lua = [ C.GristFiles : keeper.lua ] ;
 SEARCH on $(keeper.lua) = $(SEARCH_SOURCE)/src ;
 
-local keeper.lc = <lanes>keeper.lc ;
+local keeper.lc = [ C.GristFiles : keeper.lc ] ;
 MakeLocate $(keeper.lc) : $(LOCATE_TARGET) ;
 
-local keeper.lch = <lanes>keeper.lch ;
+local keeper.lch = [ C.GristFiles : keeper.lch ] ;
 MakeLocate $(keeper.lch) : $(LOCATE_TARGET) ;
 ForceCare $(keeper.lch) ;
 
 Lua.ToBinary lanes : $(keeper.lc) : $(keeper.lua) ;
 LanesBin2C lanes : $(keeper.lch) : $(keeper.lc) ;
 
-C.IncludeDirectories lanes : $(LOCATE_TARGET) ;
+C.IncludeDirectories : $(LOCATE_TARGET) ;
 
 if $(PLATFORM) = linux32
 {
-	C.LinkPrebuiltLibraries lanes : pthread ;
+	C.LinkPrebuiltLibraries : pthread ;
 }
 
-Lua.CModule lanes : lua51-lanes lanes : $(SRCS) ;
+Lua.CModule : lua51-lanes lanes : $(SRCS) ;
 
 }
