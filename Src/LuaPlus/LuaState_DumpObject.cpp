@@ -618,7 +618,7 @@ bool LuaState::DumpObject(LuaStateOutFile& file, LuaObject& key, LuaObject& valu
 	const unsigned int indentSpaces = (indentLevel == -1 ? 0 : indentLevel) * INDENT_SIZE;
 
 	// If the variable is user data or a function...
-	if (!alreadyDumpedKey  &&  value.IsUserdata()  ||  value.IsFunction()  ||  value.IsCFunction())
+	if (!alreadyDumpedKey  &&  (value.IsUserdata()  ||  value.IsFunction()  ||  value.IsCFunction()))
 	{
 		// ... only write it if they requested it be written.  But only do
 		// it as a comment.
